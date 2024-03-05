@@ -22,3 +22,13 @@ variable "public-subnets" {
   description = "Public Subnets the code will create"
   type        = map(number)
 }
+
+variable "public-lambda-name" {
+  description = "Name for the Public Lambda Function"
+  type        = string
+}
+
+variable "private-lambda-name" {
+  description = "Name for the Public Lambda Function"
+  type        = string
+}
