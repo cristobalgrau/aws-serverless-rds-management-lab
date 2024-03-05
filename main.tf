@@ -49,3 +49,7 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["sts:AssumeRole"]
   }
 }
+
+data "aws_iam_policy" "vpc-management" {
+  name = "AWSLambdaVPCAccessExecutionRole"
+}

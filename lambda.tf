@@ -21,18 +21,18 @@ resource "aws_lambda_function" "private-lambda" {
   #     }
   #   }
 
-  layers = [aws_lambda_layer_version.example.arn]
+  # vpc_config {
+  #   subnet_ids         = [for subnet_key, subnet_value in aws_subnet.private_subnets : subnet_value.id]
+  #   security_group_ids = [aws_security_group.allow-all-traffic.id]
+  # }
 
-  depends_on = [
-    aws_iam_role_policy_attachment.lambda_logs,
-    aws_cloudwatch_log_group.private-lambda-logs,
-  ]
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
 }
 
 
 # Created lambda layer for pymysql Python library
 resource "aws_lambda_layer_version" "lambda_layer" {
-  filename   = "python_layer_pymysql.zip"
+  filename   = "${path.module}/lambda/python_layer_pymysql.zip"
   layer_name = "mypymysql"
 
   compatible_runtimes = ["python3.9"]
@@ -44,3 +44,8 @@ resource "aws_iam_role" "iam_for_lambda" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+# Attached VPC management policy to the lambda role
+resource "aws_iam_role_policy_attachment" "attach-vpc-policy" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = data.aws_iam_policy.vpc-management.arn
+}

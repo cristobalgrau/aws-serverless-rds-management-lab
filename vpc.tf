@@ -76,3 +76,17 @@ resource "aws_route_table_association" "public" {
   for_each       = aws_subnet.public_subnets
   subnet_id      = each.value.id
 }
+
+# Created VPC Security group
+resource "aws_security_group" "allow-all-traffic" {
+  name        = "allow-all-traffic"
+  description = "Allow all IPv4 inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+}
+
+# Created ingress rule for all IPv4 traffic
+resource "aws_vpc_security_group_ingress_rule" "allow-all-traffic-ipv4" {
+  security_group_id = aws_security_group.allow-all-traffic.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1" # semantically equivalent to all ports
+}
