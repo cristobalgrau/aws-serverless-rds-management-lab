@@ -21,14 +21,37 @@ resource "aws_lambda_function" "private-lambda" {
   #     }
   #   }
 
-  # vpc_config {
-  #   subnet_ids         = [for subnet_key, subnet_value in aws_subnet.private_subnets : subnet_value.id]
-  #   security_group_ids = [aws_security_group.allow-all-traffic.id]
-  # }
+  vpc_config {
+    subnet_ids         = [for subnet_key, subnet_value in aws_subnet.private_subnets : subnet_value.id]
+    security_group_ids = [aws_security_group.allow-all-traffic.id]
+  }
 
   layers = [aws_lambda_layer_version.lambda_layer.arn]
 }
 
+# Created Lambda function for Public RDS
+resource "aws_lambda_function" "public-lambda" {
+  filename      = "${path.module}/lambda/lambda_function_payload.zip"
+  function_name = var.public-lambda-name
+  role          = aws_iam_role.iam_for_lambda.arn
+  handler       = "lambda_function.lambda_handler"
+
+  source_code_hash = data.archive_file.lambda.output_base64sha256
+
+  runtime = "python3.9"
+
+  # ENV VARS for Lambda
+  #   environment {
+  #     variables = {
+  #       RDS_ENDPOINT = 
+  #       DB_USER = 
+  #       DB_PASSWORD = 
+  #       DB_NAME = 
+  #     }
+  #   }
+
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+}
 
 # Created lambda layer for pymysql Python library
 resource "aws_lambda_layer_version" "lambda_layer" {
