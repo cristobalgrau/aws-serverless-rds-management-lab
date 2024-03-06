@@ -9,3 +9,5 @@ public-subnets = {
   "public-subnet-1" = 1
   "public-subnet-2" = 2
 }
+private-lambda-name = "RDS-private-lambda"
+public-lambda-name  = "RDS-public-lambda"
