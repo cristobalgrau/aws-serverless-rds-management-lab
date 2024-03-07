@@ -12,14 +12,14 @@ resource "aws_lambda_function" "private-lambda" {
   runtime = "python3.9"
 
   # ENV VARS for Lambda
-  #   environment {
-  #     variables = {
-  #       RDS_ENDPOINT = 
-  #       DB_USER = 
-  #       DB_PASSWORD = 
-  #       DB_NAME = 
-  #     }
-  #   }
+    environment {
+      variables = {
+        RDS_ENDPOINT = aws_db_instance.rds-private.address
+        DB_USER = var.db-username
+        DB_PASSWORD = var.db_pass
+        DB_NAME = var.db-name
+      }
+    }
 
   vpc_config {
     subnet_ids         = [for subnet_key, subnet_value in aws_subnet.private_subnets : subnet_value.id]

@@ -9,5 +9,11 @@ public-subnets = {
   "public-subnet-1" = 1
   "public-subnet-2" = 2
 }
-private-lambda-name = "RDS-private-lambda"
-public-lambda-name  = "RDS-public-lambda"
+private-lambda-name    = "RDS-private-lambda"
+public-lambda-name     = "RDS-public-lambda"
+private-db-subnet-name = "rds-private-subnet"
+public-db-subnet-name  = "rds-public-subnet"
+rds-private-db-name    = "rds-db-private"
+rds-public-db-name     = "rds-db-public"
+db-name                = "rds_db"
+db-username            = "admin"
