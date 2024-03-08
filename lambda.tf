@@ -23,7 +23,7 @@ resource "aws_lambda_function" "private-lambda" {
 
   vpc_config {
     subnet_ids         = [for subnet_key, subnet_value in aws_subnet.private_subnets : subnet_value.id]
-    security_group_ids = [aws_security_group.allow-all-traffic.id]
+    security_group_ids = [aws_default_security_group.default.id]
   }
 
   layers = [aws_lambda_layer_version.lambda_layer.arn]

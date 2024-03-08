@@ -90,3 +90,8 @@ resource "aws_vpc_security_group_ingress_rule" "allow-all-traffic-ipv4" {
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
+
+# Created default VPC Security group
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.vpc.id
+}
