@@ -145,8 +145,9 @@ AWS Lambda Layers are like organized zip files that store additional code or dat
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/2fc6169c-8012-4b43-89f8-2d5b6a5eb09c)
 
+For more information about Lambda Layers, you can refer to the [AWS Lambda Layer Documentation](https://docs.aws.amazon.com/lambda/latest/dg/chapter-layers.html)
 
-To incorporate the Python library `pymysql` (to facilitate connectivity with MySQL databases), into our Lambda function, we leverage Lambda Layers.
+In our lab, to incorporate the Python library `pymysql` (to facilitate connectivity with MySQL databases), into our Lambda function, we will use the Lambda Layers.
 
 Refer to the [PyMySQL documentation](https://pymysql.readthedocs.io/en/latest/) for comprehensive details on the library.
 
