@@ -2,13 +2,13 @@
 
 ## Overview
 
-In this project, we develop a serverless data analysis platform using AWS services. The platform enables Lambda functions to seamlessly access and process data from both public and private Amazon RDS databases. 
+In this project, we develop a serverless data analysis platform using AWS services. The primary objective is to empower Lambda functions to effortlessly access and process data from both public and private Amazon RDS databases. 
 
 The key components and features of the project include:
 
-- **Serverless Architecture:** Use of AWS Lambda for serverless compute
-- **Data Access and Processing:** Enable Lambda functions to interact with both a public and a private Amazon RDS database
-- **VPC Configuration:** Use of VPC configuration with Public and Private subnets, to test how lambda interacts with each one
+- **Serverless Architecture:** Leveraging AWS Lambda for efficient serverless compute capabilities.
+- **Data Access and Processing:** Facilitating seamless interaction between Lambda functions and both public and private Amazon RDS databases. This ensures a versatile data processing environment.
+- **VPC Configuration:** Implementation of VPC configuration with distinct Public and Private subnets. This configuration is designed to evaluate and optimize Lambda interactions with each subnet, providing a comprehensive testing ground.
 
 <br>
 
@@ -65,7 +65,7 @@ The services used on this lab are under the Free Tier, but if your Free Tier end
 
 ### 1. VPC and Network Components
 
-From the AWS Console, we create the VPC with the option `VPC and more`, in this way the VPC will assist on the creation of Subnets, Route tables, and Internet gateway. For this lab it is OK, but if you want to control the CIDR assignation then you can create separately each component.
+To set up the VPC and associated network components, we utilize the AWS Console with the `VPC and more` option. This streamlined approach automates the creation of essential elements such as Subnets, Route tables, and Internet gateways. While this method is suitable for our lab purposes, for more precise control over CIDR assignment, individual components can be created separately.
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/0e9a49ce-7ef6-49bf-866e-d1c1e2586e9b)
 
@@ -74,15 +74,24 @@ From the AWS Console, we create the VPC with the option `VPC and more`, in this 
 ### 2. Amazon RDS
 
 
-To create the RDS, AWS requests the creation of a DB subnet group, and to create this last one it is needed at least 2 AZ.
+When setting up Amazon RDS, AWS mandates the creation of a DB subnet group. To accomplish this, a minimum of 2 Availability Zones (AZ) is required.
 
-In the Amazon RDS console look for `Subnet groups`. You need to assign the name, a brief description, assign the VPN, the AZ, and the subnets.
+Here's a step-by-step guide within the Amazon RDS console:
+
+- Navigate to "Subnet groups" in the Amazon RDS console.
+- Assign a distinctive name and provide a brief description for the DB subnet group.
+- Specify the Virtual Private Cloud (VPC).
+- Choose at least 2 Availability Zones (AZ) for optimal redundancy.
+- Allocate the appropriate subnets to the DB subnet group.
+
+
+By following these steps, you ensure the proper configuration of the DB subnet group, laying a solid foundation for the deployment of Amazon RDS within our serverless data analysis platform. 
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/bfe54f1b-b89b-4fc7-bd0a-19c420a88543)
 
 #### 2.1 RDS in Private Subnet
 
-During the creation of your RDS, for this lab we selected the following options: 
+During the RDS creation process, we have opted for specific configurations tailored to the needs of this lab:
 
 - **Creation method:** Standard create
 - **Engine type:** MySQL
@@ -96,15 +105,16 @@ During the creation of your RDS, for this lab we selected the following options:
 	- **DB subnet group:** rds-private-subnet
 	- **Public access:** No
 - **Additional configuration (expand)**
-	- **Initial database name:** rdstest
+	- **Initial database name:** rds_db
 	- **Automated Backups:** disable
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/36ebc44a-82e8-48df-b108-cc815e5585e9)
 
+By adhering to these specifications, we establish a secure RDS instance in a private subnet, minimizing exposure to the public network. Adjustments can be made based on specific project requirements or security considerations.
 
 #### 2.2 RDS in Public Subnet
 
-During the creation of your RDS, for this lab we selected the following options: 
+Throughout the creation of the RDS instance tailored for this lab, we've chosen the following options:  
 
 - **Creation method:** Standard create
 - **Engine type:** MySQL
@@ -120,24 +130,33 @@ During the creation of your RDS, for this lab we selected the following options:
 	- **VPC security group (firewall):** Create new
 		- **New VPC security group name:** rds-public-security-group
 - **Additional configuration (expand)**
-	- **Initial database name:** rdstest
+	- **Initial database name:** rds_db
 	- **Automated Backups:** disable
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/ef87ef8d-0ad1-4b5e-9124-53003a958b44)
+
+By configuring the RDS instance with these settings, we ensure accessibility from the public network while maintaining security through the specified VPC and associated security group that can narrow down the access as needed.
 
 ### 3. Lambda Function
 
 #### Lambda Layers
 
-We need to use the Python library `pymysql`, which is a Python library that provides an interface to connect and interact with MySQL databases. To use this Python library inside our lambda we need to use Lambda Layers.
+To incorporate the Python library `pymysql` (to facilitate connectivity with MySQL databases), into our Lambda function, we leverage Lambda Layers.
 
-[PyMySQL documentation](https://pymysql.readthedocs.io/en/latest/)
+Refer to the [PyMySQL documentation](https://pymysql.readthedocs.io/en/latest/) for comprehensive details on the library.
 
-To create the layer we can use Cloudshell inside the AWS console. We have to verify the Python version in the cloudshell with the command `python --version`. In my case the version was 3.9.16, so i had to change the Runtime setting from 3.12 to 3.9 to match the versions and avoid any conflicts.
+To initiate the Layer creation process, follow these steps within the AWS CloudShell:
+
+- **Verify Python version:**
+	- Execute `python --version` to confirm the Python version in CloudShell.
+	- Adjust the Lambda function's runtime settings to match this version (e.g., changing from 3.12 to 3.9) to prevent version conflicts.
 
 Then we proceed with the following steps to create the Layer and use it:
 
-- **Create a Layer Package:** Create a directory for your layer and install pymysql into that directory
+- **Create a Layer Package:** 
+	- Establish a directory for the layer (e.g., python).
+	- Install `pymysql` into the designated directory using:
+<br>
 
 	```bash
     mkdir python
@@ -147,28 +166,35 @@ Then we proceed with the following steps to create the Layer and use it:
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/9da558d1-0d27-485c-b653-7db4abad1ebe)
 
 - **Create the Zip file for the layer:**
-  	
+	- Execute the following command to create a Zip file for the layer:
+<br>
+
 	```bash
 	zip -r python_layer_pymysql python
-  ```
+  	```
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/19dad1d8-8da2-43f8-aad3-e9d0d982e3b7)
 
-- **Download the zip file:** Inside the cloudshell windows just verify your current directory with the command `pwd` and download the file from that directory
+- **Download the zip file:** 
+	- Verify the current directory using `pwd` in CloudShell.
+	- Download the created Zip file from the identified directory.
+
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/4376733f-1236-496c-9454-4c61d1cf3230)
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/23b05519-19c0-4237-931a-c02d7462eb37)
 
 
-- **Create a Lambda Layer:** In your AWS Lambda console you will see the `Layer` option on the left menu. Create a new Layer and Upload the `python_layer_pymysql.zip` file as a new Lambda Layer using the AWS Console
+- **Create a Lambda Layer:** 
+	- Within the AWS Lambda console, locate the `Layer` option in the left menu.
+	- Initiate the creation of a new Layer and upload the `python_layer_pymysql.zip` file as a new Lambda Layer using the AWS Console.
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/240965d3-d0d2-4637-823f-d51dae52b66d)
 
 #### Lambda Creation
 
-Proceed to the Lambda service in your console and create a New Lambda Function from Scratch. In this lab, we will use a Python code, so we selected Python 3.9 in the Runtime to maintain the version used for the Lambda Layer created in the previous step.
+Navigate to the Lambda service in your AWS console and initiate the creation of a new Lambda Function from Scratch. Given that our chosen runtime for the Lambda Layer in the previous step is Python 3.9, ensure consistency by selecting Python 3.9 as the runtime for the Lambda function.
 
-We created two Lambda functions for testing purposes, one to interact with Private RDS and the other to interact with Public RDS.
+In this lab, we have developed two Lambda functions for testing purposes: one designed to interact with a Private RDS and the other intended for interaction with a Public RDS.
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/a9117ac8-ceb9-4118-a0e0-3cdbf11ce6bf)
 
@@ -224,7 +250,11 @@ These ENV VARS are predefined in the Environment Variable section inside the Lam
 
 #### Attaching Lambda Layer to the Lambda Function
 
-To execute the SQL command used in the Python code you need to proceed to attach the Lambda Layer to use the Python library needed. In the AWS Lambda Management Console, navigate to your Lambda function. In the "Function code" section, you'll find the "Layers" configuration at the bottom. Add a layer and select the pymysql layer that was created.
+To enable the execution of SQL commands within your Python code, it's crucial to attach the Lambda Layer containing the necessary Python library. Follow these steps in the AWS Lambda Management Console:
+
+1. Navigate to your Lambda function.
+2. In the "Function code" section, locate the "Layers" configuration at the bottom.
+3. Add a new layer and select the `pymysql` layer created in the previous steps.
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/15b18ec4-47cb-47f1-9cbc-09be12b99a24)
 
@@ -232,22 +262,16 @@ To execute the SQL command used in the Python code you need to proceed to attach
 
 ## Lab Testing
 
-### Private RDS Test
+### Private RDS test with Private Lambda
 
-If you test your lambda it fails to connect to the RDS in the private subnet because your lambda is not in the same VPC and Private Subnet.
+When testing the lambda, it fails to connect to the RDS in the private subnet due to the lambda not being in the same VPC and private subnet.
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/7f6b53f3-328e-4b7b-9fc4-ba8e9b7dc827)
 
-### Public RDS with Private Lambda Test
 
-Using the Lambda Function that has a connection to the VPC, and modifying the Environment Variable `RDS_ENDPOINT` the lambda can connect to the RDS.
+### Public RDS test with Public Lambda
 
-
-![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/6311ba1f-9144-4d96-a14d-b0fc88b011cf)
-
-### Public RDS with Public Lambda
-
-Using the `rds-public-lambda` function, the test fails to connect to the RDS because there are no permissions for the inbound traffic 
+For the `rds-public-lambda` function, the test fails to connect to the RDS due to insufficient permissions for inbound traffic. 
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/6eae00d8-878d-4aeb-a6c4-c786346bb0b5)
 
@@ -257,19 +281,19 @@ Using the `rds-public-lambda` function, the test fails to connect to the RDS bec
 
 ### Private RDS
 
-There are 2 ways to fix or avoid this issue when the Lambda function is not in the same VPC:
+When encountering issues with the Lambda function not being in the same VPC as the RDS, consider the following two solutions:
 
-1. **Create RDS database connection:** Inside your lambda you need to go to the configuration tab, in the RDS database section, from there you can create the connection to the RDS database
+1. **Create RDS database connection:**  Inside your Lambda function's configuration tab, navigate to the RDS database section. Here, you can establish a connection to the RDS database.
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/c8597dd1-f60c-47b9-a5c7-fc1ca07a56a6)
 
-2. **During Lambda creation:** During the lambda creation you can expand the `Advanced Settings` and select `Enable VPC` and choose your VPC, your private subnets and the default security group.
+2. **During Lambda creation:** During the lambda creation you can expand the `Advanced Settings` and select `Enable VPC` and choose your VPC, your private subnets, and the default security group.
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/a78e9185-786d-4f07-9f10-f18c1fa696f2)
 
 ### Public RDS
 
-We need to edit the VPC security group created for this RDS to add an inbound rule to allow `All IPv4 traffic`. In this way, we allow the Lambda function to access the RDS Public
+To resolve issues with accessing the Public RDS, edit the VPC security group associated with the RDS. Add an inbound rule to allow `All IPv4 traffic`, enabling the Lambda function to access the RDS publicly.
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/40aa8f84-102c-4a95-802e-86ec91211e5e)
 
