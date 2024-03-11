@@ -141,6 +141,11 @@ By configuring the RDS instance with these settings, we ensure accessibility fro
 
 #### Lambda Layers
 
+AWS Lambda Layers are like organized zip files that store additional code or data separately from your main function code. They are beneficial for keeping deployment packages small by isolating dependencies, allowing independent updates for function code and dependencies. Layers promote code reusability across multiple functions, simplify package management by isolating large dependencies, and facilitate the use of the Lambda console code editor. In essence, they optimize code deployment by addressing Lambda's size limitations, making updates more efficient and reducing redundancy in serverless applications.
+
+![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/2fc6169c-8012-4b43-89f8-2d5b6a5eb09c)
+
+
 To incorporate the Python library `pymysql` (to facilitate connectivity with MySQL databases), into our Lambda function, we leverage Lambda Layers.
 
 Refer to the [PyMySQL documentation](https://pymysql.readthedocs.io/en/latest/) for comprehensive details on the library.
