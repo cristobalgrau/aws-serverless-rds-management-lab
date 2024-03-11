@@ -7,7 +7,9 @@ locals {
 
 # Define VPC
 resource "aws_vpc" "vpc" {
-  cidr_block = "10.0.0.0/24"
+  cidr_block           = "10.0.0.0/24"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
   tags = {
     Name = "${var.vpc-name}-vpc"
   }
@@ -89,9 +91,4 @@ resource "aws_vpc_security_group_ingress_rule" "allow-all-traffic-ipv4" {
   security_group_id = aws_security_group.allow-all-traffic.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
-}
-
-# Created default VPC Security group
-resource "aws_default_security_group" "default" {
-  vpc_id = aws_vpc.vpc.id
 }

@@ -65,5 +65,6 @@ variable "db-username" {
 
 variable "db_pass" {
   description = "Admin password for the database. It will take this value from your shell ENV VARS"
-  type        = string
+  # how to use ENV VARS from shell: https://support.hashicorp.com/hc/en-us/articles/4547786359571-Reading-and-using-environment-variables-in-Terraform-runs
+  type = string
 }

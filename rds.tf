@@ -22,7 +22,7 @@ resource "aws_db_instance" "rds-private" {
   engine_version          = "8.0.35"
   instance_class          = "db.t3.micro"
   username                = var.db-username
-  password                = var.db_pass #hot to use ENV VARS from shell: https://support.hashicorp.com/hc/en-us/articles/4547786359571-Reading-and-using-environment-variables-in-Terraform-runs
+  password                = var.db_pass
   parameter_group_name    = "default.mysql8.0"
   skip_final_snapshot     = true
   backup_retention_period = 0
@@ -39,13 +39,11 @@ resource "aws_security_group" "allow-lambda-to-rds" {
 
 # Created ingress rule for all traffic from Lambda to RDS
 resource "aws_vpc_security_group_ingress_rule" "allow-lambda-to-rds" {
-  security_group_id = aws_security_group.allow-lambda-to-rds.id
-  # cidr_ipv4         = "0.0.0.0/0"
+  security_group_id            = aws_security_group.allow-lambda-to-rds.id
   ip_protocol                  = "tcp"
   from_port                    = 3306
   to_port                      = 3306
   referenced_security_group_id = aws_security_group.allow-rds-to-lambda.id
-  # security_groups = [aws_security_group.allow-rds-to-lambda]
 }
 
 # Create RDS Public
@@ -57,10 +55,11 @@ resource "aws_db_instance" "rds-public" {
   engine_version          = "8.0.35"
   instance_class          = "db.t3.micro"
   username                = var.db-username
-  password                = var.db_pass #hot to use ENV VARS from shell: https://support.hashicorp.com/hc/en-us/articles/4547786359571-Reading-and-using-environment-variables-in-Terraform-runs
+  password                = var.db_pass
   parameter_group_name    = "default.mysql8.0"
   skip_final_snapshot     = true
+  publicly_accessible     = true
   backup_retention_period = 0
-  db_subnet_group_name    = aws_db_subnet_group.private-db-subnet.name
+  db_subnet_group_name    = aws_db_subnet_group.public-db-subnet.name
   vpc_security_group_ids  = [aws_security_group.allow-all-traffic.id]
 }
