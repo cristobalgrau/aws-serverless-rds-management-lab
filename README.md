@@ -1,5 +1,34 @@
 # Serverless RDS Management
 
+#### Table of Content
+
+- [Overview](#overview)
+- [Architecture Diagram](#architecture-diagram)
+- [Services Used](#services-used)
+- [Technology Stack](#technology-stack)
+- [Budget](#budget)
+- [Lab Deployment](#lab-deployment)
+  * [1. VPC and Network Components](#1-vpc-and-network-components)
+  * [2. Amazon RDS](#2-amazon-rds)
+    + [2.1 RDS in Private Subnet](#21-rds-in-private-subnet)
+    + [2.2 RDS in Public Subnet](#22-rds-in-public-subnet)
+  * [3. Lambda Function](#3-lambda-function)
+    + [Lambda Layers](#lambda-layers)
+    + [Lambda Creation](#lambda-creation)
+    + [Attaching Lambda Layer to the Lambda Function](#attaching-lambda-layer-to-the-lambda-function)
+- [Lab Testing](#lab-testing)
+  * [Private RDS test with Private Lambda](#private-rds-test-with-private-lambda)
+  * [Public RDS test with Public Lambda](#public-rds-test-with-public-lambda)
+- [Troubleshooting](#troubleshooting)
+  * [Private RDS](#private-rds)
+  * [Public RDS](#public-rds)
+- [Clean Up](#clean-up)
+
+<br>
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
 ## Overview
 
 In this project, we develop a serverless data analysis platform using AWS services. The primary objective is to empower Lambda functions to effortlessly access and process data from both public and private Amazon RDS databases. 
@@ -317,6 +346,4 @@ To resolve issues with accessing the Public RDS, edit the VPC security group ass
 - Delete DB Subnet Groups
 - Delete Lambda Functions
 - Delete IAM Roles for RDS
-
-
 
