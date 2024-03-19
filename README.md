@@ -22,6 +22,7 @@
 - [Troubleshooting](#troubleshooting)
   * [Private RDS](#private-rds)
   * [Public RDS](#public-rds)
+- [Terraform development](#terraform-development)
 - [Clean Up](#clean-up)
 
 <br>
@@ -335,6 +336,12 @@ To resolve issues with accessing the Public RDS, edit the VPC security group ass
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/7142bb8c-d229-47e8-b940-043882233cb9)
 
 ![image](https://github.com/cristobalgrau/aws-serverless-rds-management-lab/assets/119089907/f30456a3-dcc2-4060-9a72-2885097d6c56)
+
+<br>
+
+## Terraform Development
+
+Please refer to the [Lab Terraform README](./README_terraform.md) for reference.
 
 <br>
 
